@@ -2,12 +2,14 @@ import firebase from "firebase";
 
 // Initialize Firebase
 const config = {
-  apiKey: "AIzaSyAz-GPfA-hN74oFh3XvXsF9vQrlE5xpU10",
-  authDomain: "wieldy-4f59c.firebaseapp.com",
-  databaseURL: "https://wieldy-4f59c.firebaseio.com",
-  projectId: "wieldy-4f59c",
-  storageBucket: "wieldy-4f59c.appspot.com",
-  messagingSenderId: "81949884261"
+  apiKey: "AIzaSyAHrAGOglyd9a3z9f0peMnwdPIE47nStY0",
+    authDomain: "reportessalud-3bee0.firebaseapp.com",
+    databaseURL: "https://reportessalud-3bee0.firebaseio.com",
+    projectId: "reportessalud-3bee0",
+    storageBucket: "reportessalud-3bee0.appspot.com",
+    messagingSenderId: "6901437138",
+    appId: "1:6901437138:web:a14aa20738e7f0fa8ad30b",
+    measurementId: "G-1S9711Z9PL"
 };
 
 firebase.initializeApp(config);

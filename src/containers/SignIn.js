@@ -1,7 +1,7 @@
 import React from "react";
-import {Button, Checkbox, Form, Icon, Input, message} from "antd";
-import {connect} from "react-redux";
-import {Link} from "react-router-dom";
+import { Button, Checkbox, Form, Icon, Input, message } from "antd";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import {
   hideMessage,
@@ -41,8 +41,8 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const {getFieldDecorator} = this.props.form;
-    const {showMessage, loader, alertMessage} = this.props;
+    const { getFieldDecorator } = this.props.form;
+    const { showMessage, loader, alertMessage } = this.props;
 
     return (
       <div className="gx-app-login-wrap">
@@ -50,15 +50,15 @@ class SignIn extends React.Component {
           <div className="gx-app-login-main-content">
             <div className="gx-app-logo-content">
               <div className="gx-app-logo-content-bg">
-                <img src="https://via.placeholder.com/272x395" alt='Neature'/>
+                <img src="http://lorempixel.com/272/395/abstract/" alt='abstract' />
               </div>
               <div className="gx-app-logo-wid">
-                <h1><IntlMessages id="app.userAuth.signIn"/></h1>
-                <p><IntlMessages id="app.userAuth.bySigning"/></p>
-                <p><IntlMessages id="app.userAuth.getAccount"/></p>
+                <h1><IntlMessages id="app.userAuth.signInTitulo" /></h1>
+                <p><IntlMessages id="app.userAuth.bySigning" /></p>
+                <p><IntlMessages id="app.userAuth.getAccount" /></p>
               </div>
               <div className="gx-app-logo">
-                <img alt="example" src={require("assets/images/logo.png")}/>
+                <img alt="logo" src={require("assets/images/logo.png")} />
               </div>
             </div>
             <div className="gx-app-login-content">
@@ -66,20 +66,20 @@ class SignIn extends React.Component {
 
                 <FormItem>
                   {getFieldDecorator('email', {
-                    initialValue: "demo@example.com",
+                    // initialValue: "demo@example.com",
                     rules: [{
-                      required: true, type: 'email', message: 'The input is not valid E-mail!',
+                      required: true, type: 'email', message: 'Ingrese un Email valido!',
                     }],
                   })(
-                    <Input placeholder="Email"/>
+                    <Input placeholder="Ingrese su Email" />
                   )}
                 </FormItem>
                 <FormItem>
                   {getFieldDecorator('password', {
-                    initialValue: "demo#123",
-                    rules: [{required: true, message: 'Please input your Password!'}],
+                    // initialValue: "demo#123",
+                    rules: [{ required: true, message: 'Por favor ingrese su contraseña!' }],
                   })(
-                    <Input type="password" placeholder="Password"/>
+                    <Input type="password" placeholder="Contraseña" />
                   )}
                 </FormItem>
                 <FormItem>
@@ -87,55 +87,56 @@ class SignIn extends React.Component {
                     valuePropName: 'checked',
                     initialValue: true,
                   })(
-                    <Checkbox><IntlMessages id="appModule.iAccept"/></Checkbox>
+                    <Checkbox><IntlMessages id="appModule.recordarme" /></Checkbox>
                   )}
-                  <span className="gx-signup-form-forgot gx-link"><IntlMessages
-                    id="appModule.termAndCondition"/></span>
+                  {/* <span className="gx-signup-form-forgot gx-link"><IntlMessages
+                    id="appModule.termAndCondition" /></span> */}
                 </FormItem>
                 <FormItem>
                   <Button type="primary" className="gx-mb-0" htmlType="submit">
-                    <IntlMessages id="app.userAuth.signIn"/>
+                    <IntlMessages id="app.userAuth.signIn" />
                   </Button>
-                  <span><IntlMessages id="app.userAuth.or"/></span> <Link to="/signup"><IntlMessages
-                  id="app.userAuth.signUp"/></Link>
+                  <span><IntlMessages id="app.userAuth.or" /></span> <Link to="/signup"><IntlMessages
+                    id="app.userAuth.signUp" /></Link>
                 </FormItem>
                 <div className="gx-flex-row gx-justify-content-between">
-                  <span>or connect with</span>
+                  <span><IntlMessages id="app.userAuth.conectarCon" /></span>
                   <ul className="gx-social-link">
                     <li>
                       <Icon type="google" onClick={() => {
                         this.props.showAuthLoader();
                         this.props.userGoogleSignIn();
-                      }}/>
+                      }} />
                     </li>
                     <li>
                       <Icon type="facebook" onClick={() => {
                         this.props.showAuthLoader();
                         this.props.userFacebookSignIn();
-                      }}/>
+                      }} />
                     </li>
-                    <li>
+                    {/* <li>
                       <Icon type="github" onClick={() => {
                         this.props.showAuthLoader();
                         this.props.userGithubSignIn();
-                      }}/>
+                      }} />
                     </li>
                     <li>
                       <Icon type="twitter" onClick={() => {
                         this.props.showAuthLoader();
                         this.props.userTwitterSignIn();
-                      }}/>
-                    </li>
+                      }} />
+                    </li> */}
                   </ul>
                 </div>
-                <span
-                  className="gx-text-light gx-fs-sm"> demo user email: 'demo@example.com' and password: 'demo#123'</span>
+                {/* <span
+                  className="gx-text-light gx-fs-sm"> demo user email: 'demo@example.com' and password: 'demo#123'
+                </span> */}
               </Form>
             </div>
 
             {loader ?
               <div className="gx-loader-view">
-                <CircularProgress/>
+                <CircularProgress />
               </div> : null}
             {showMessage ?
               message.error(alertMessage.toString()) : null}
@@ -148,9 +149,9 @@ class SignIn extends React.Component {
 
 const WrappedNormalLoginForm = Form.create()(SignIn);
 
-const mapStateToProps = ({auth}) => {
-  const {loader, alertMessage, showMessage, authUser} = auth;
-  return {loader, alertMessage, showMessage, authUser}
+const mapStateToProps = ({ auth }) => {
+  const { loader, alertMessage, showMessage, authUser } = auth;
+  return { loader, alertMessage, showMessage, authUser }
 };
 
 export default connect(mapStateToProps, {

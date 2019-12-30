@@ -1,5 +1,11 @@
 const languageData = [
   {
+    languageId: 'spanish',
+    locale: 'es',
+    name: 'Spanish',
+    icon: 'es'
+  },
+  {
     languageId: 'english',
     locale: 'en',
     name: 'English',
@@ -10,13 +16,7 @@ const languageData = [
     locale: 'zh',
     name: 'Chinese',
     icon: 'cn'
-  },
-  {
-    languageId: 'spanish',
-    locale: 'es',
-    name: 'Spanish',
-    icon: 'es'
-  },
+  },  
   {
     languageId: 'french',
     locale: 'fr',
