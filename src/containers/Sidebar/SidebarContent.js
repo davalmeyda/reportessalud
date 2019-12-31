@@ -60,13 +60,13 @@ class SidebarContent extends Component {
                     <IntlMessages id="sidebar.dashboard" /></span>}>
                   <Menu.Item key="principal/dashboard/general">
                     <Link to="/principal/dashboard/general">
-                      <i className="icon icon-table-general" />
+                      {/* <i className="icon icon-table-general" /> */}
                       <IntlMessages id="sidebar.dashboard.general" />
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="principal/dashboard/carteras">
                     <Link to="/principal/dashboard/carteras">
-                      <i className="icon icon-crm" />
+                      {/* <i className="icon icon-crm" /> */}
                       <IntlMessages id="sidebar.dashboard.carteras" />
                     </Link>
                   </Menu.Item>

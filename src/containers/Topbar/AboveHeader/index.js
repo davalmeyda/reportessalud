@@ -62,7 +62,7 @@ class AboveHeader extends Component {
 
 
   render() {
-    const { width, locale, navCollapsed } = this.props;
+    const { width, navCollapsed } = this.props;
     return (
       <div className="gx-header-horizontal gx-header-horizontal-dark gx-above-header-horizontal">
 

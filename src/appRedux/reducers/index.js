@@ -5,6 +5,7 @@ import Auth from "./Auth";
 import Notes from "./Notes";
 import Contact from "./Contact";
 import Common from "./Common";
+import Personalizado from './Personalizado';
 
 
 const reducers = combineReducers({
@@ -14,6 +15,7 @@ const reducers = combineReducers({
   notes: Notes,
   contact: Contact,
   common: Common,
+  Personalizado,
 });
 
 export default reducers;

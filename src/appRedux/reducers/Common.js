@@ -7,6 +7,7 @@ const INIT_STATE = {
 };
 
 export default (state = INIT_STATE, action) => {
+  
   switch (action.type) {
     case FETCH_START: {
       return {...state, error: '', message: '', loading: true};

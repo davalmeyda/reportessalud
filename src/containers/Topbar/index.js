@@ -45,7 +45,7 @@ class Topbar extends Component {
 
 
   render() {
-    const { locale, width, navCollapsed, navStyle } = this.props;
+    const { width, navCollapsed, navStyle } = this.props;
     return (
       <Auxiliary>
         <Header>
