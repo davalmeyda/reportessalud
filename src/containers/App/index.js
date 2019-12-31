@@ -94,7 +94,7 @@ class App extends Component {
       if (authUser === null) {
         return ( <Redirect to={'/signin'}/> );
       } else if (initURL === '' || initURL === '/' || initURL === '/signin') {
-        return ( <Redirect to={'/main/dashboard/crypto'}/> );
+        return ( <Redirect to={'/principal/dashboard/general'}/> );
       } else {
         return ( <Redirect to={initURL}/> );
       }

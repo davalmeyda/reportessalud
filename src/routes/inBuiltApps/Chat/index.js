@@ -169,7 +169,7 @@ class Chat extends Component {
       </div>
 
       <div className="gx-chat-sidenav-content">
-        {/*<AppBar position="static" className="no-shadow chat-tabs-header">*/}
+        {/* <AppBar position="static" className="no-shadow chat-tabs-header"> */}
         <Tabs className="gx-tabs-half" defaultActiveKey="1">
           <TabPane label={<IntlMessages id="chat.chatUser"/>} tab={<IntlMessages id="chat.chatUser"/>} key="1">
             <CustomScrollbars className="gx-chat-sidenav-scroll-tab-1">

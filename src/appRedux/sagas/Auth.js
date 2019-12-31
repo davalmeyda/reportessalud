@@ -60,7 +60,8 @@ const signInUserWithTwitterRequest = async () =>
     .catch(error => error);
 
 function* createUserWithEmailPassword({ payload }) {
-  const { email, password } = payload;
+  console.log(payload.name);
+  const { email, password, name } = payload;
   try {
     const signUpUser = yield call(createUserWithEmailPasswordRequest, email, password);
     if (signUpUser.message) {
@@ -76,6 +77,10 @@ function* createUserWithEmailPassword({ payload }) {
       }
       yield put(showAuthMessage(mensajeError));
     } else {
+      const userr = auth.currentUser;
+      yield userr.updateProfile({
+        displayName: name
+      });
       localStorage.setItem('user_id', signUpUser.user.uid);
       yield put(userSignUpSuccess(signUpUser.user.uid));
     }
@@ -150,7 +155,7 @@ function* signInUserWithTwitter() {
 function* signInUserWithEmailPassword({ payload }) {
   const { email, password } = payload;
   try {
-    const signInUser = yield call(signInUserWithEmailPasswordRequest, email, password);    
+    const signInUser = yield call(signInUserWithEmailPasswordRequest, email, password);
     if (signInUser.message) {
       let mensajeError = '';
       if (signInUser.code === 'auth/invalid-email') {

@@ -104,9 +104,10 @@ class InsideHeader extends Component {
                       </Button>
                     </Dropdown>
                       <SearchBox styleName="gx-popover-search-bar"
-                                 placeholder="Search in app..."
+                                 placeholder="buscar en la aplicacion..."
                                  onChange={this.updateSearchChatUser.bind(this)}
-                                 value={this.state.searchText}/></div>
+                                 value={this.state.searchText}/>
+                                 </div>
                   } trigger="click">
 
                     <span className="gx-pointer gx-d-block"><i className="icon icon-search-new"/></span>
