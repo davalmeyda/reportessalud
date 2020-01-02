@@ -234,6 +234,43 @@ class GeneralProvider {
         console.log(data1);
         return data1;
     }
+
+
+    datosGraficoCitas = async (cantidadDias) => {        
+        const dataGraficoTotal = [];
+        const milisegundosPorDia = 86400000;
+        let contMilisegundos = 0;
+        const dias = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+        // HACERMOS UN FOR CON LAS X CANTIDADES DE DATOS
+        for (let index = 0; index < cantidadDias; index++) {
+            const fffff = new Date(Date.now() - contMilisegundos);
+            const fechaDiaAnterior = this.herramientasProvider.fechaActual(new Date(fffff));
+
+            const dataGrafico = await this.citasPorServicios(fechaDiaAnterior, fechaDiaAnterior);
+            // SUMAMOS LOS VALORES DE LAS CITAS
+            const voluntarias = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'VOLUNTARIAS'));
+            const recitas = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'RECITAS'));
+            const interconsultas = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'INTERCONSULTAS'));
+            const linea = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'ESSAENLINEA'));
+
+            const total = voluntarias + recitas + interconsultas + linea;
+
+            // OBTENERMOS LOS DIAS DE LA SEMANA Y SOLO TOMAMOS LOS 3 PRIMERO CARACTERES
+            const dia = dias[fffff.getDay()].substr(0, 3) + ' ' + fffff.getDate();
+
+            // AGREGAMOS EL ARRAY QUE UTILIZARA EL CHAR
+            const data = {
+                name: dia,
+                'Dadas': total,
+                'Atendidas': 0
+            };
+            dataGraficoTotal.unshift(data);
+            contMilisegundos += milisegundosPorDia;
+        }
+        console.log(dataGraficoTotal);
+        return dataGraficoTotal;
+    }
+
 }
 
 export default GeneralProvider;

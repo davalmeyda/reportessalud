@@ -6,6 +6,17 @@ class HerramientasProviders {
             value;
     }
 
+    fechaActual = (fecha) => {
+        let fechaActual = ''     
+
+        const dia = this.PadLeft(fecha.getDate(), 2);
+        const mes = this.PadLeft(fecha.getMonth() + 1, 2);
+        const año = fecha.getFullYear();
+
+        fechaActual = dia + '/' + mes + '/' + año
+        return fechaActual;
+    }
+
     ordenarArray = (data, columna) => {
         data.sort((a, b) => {
             if (a[columna] > b[columna]) {
@@ -26,7 +37,7 @@ class HerramientasProviders {
         lista.forEach(d => {
             suma += parseInt(d[columna]) || 0;
         });
-        return this.PadLeft(suma, 3);
+        return this.PadLeft(suma, 4);
     }
 
     agruparArrayValorColumna = (array, columna) => {

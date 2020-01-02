@@ -1,10 +1,11 @@
-import { LLENAR_DATOS } from "../../constants/ActionTypes";
+import { LLENAR_DATOS, LLENAR_GRAFICO_CITAS } from "../../constants/ActionTypes";
 
 const INIT_STATE = {
-    voluntarias: 0,
-    recitas: 0,
-    interconsultas: 0,
-    linea: 0,
+    voluntarias: '0000',
+    recitas: '0000',
+    interconsultas: '0000',
+    linea: '0000',
+    datosGraficos: []
 };
 
 export default (state = INIT_STATE, action) => {
@@ -16,6 +17,16 @@ export default (state = INIT_STATE, action) => {
                 recitas,
                 interconsultas,
                 linea,
+                datosGraficos: state.datosGraficos,
+            }
+        case LLENAR_GRAFICO_CITAS:
+            const datosGraficos = action.payload;
+            return {
+                voluntarias: state.voluntarias,
+                recitas: state.recitas,
+                interconsultas: state.interconsultas,
+                linea: state.linea,
+                datosGraficos,
             }
         default:
             return state;

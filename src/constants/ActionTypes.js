@@ -44,3 +44,4 @@ export const DELETE_CONTACT_SUCCESS = 'DELETE_CONTACT_SUCCESS';
 
 //agregando datos
 export const LLENAR_DATOS = 'LLENAR_DATOS';
+export const LLENAR_GRAFICO_CITAS = 'LLENAR_GRAFICOS_CITAS';

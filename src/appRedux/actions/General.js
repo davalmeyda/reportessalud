@@ -1,4 +1,4 @@
-import { LLENAR_DATOS } from "../../constants/ActionTypes";
+import { LLENAR_DATOS, LLENAR_GRAFICO_CITAS} from "../../constants/ActionTypes";
 
 export const llenarDatos = (datos) => {
     return {
@@ -6,3 +6,9 @@ export const llenarDatos = (datos) => {
         payload: datos,
     }
 };
+export const llenarGraficoCitas =(dataGrafico)=>{
+    return {
+        type: LLENAR_GRAFICO_CITAS,
+        payload: dataGrafico,
+    }
+}
