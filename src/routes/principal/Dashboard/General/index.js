@@ -7,10 +7,66 @@ import SiteAudience from "components/dashboard/CRM/SiteAudience";
 import AdmisionChar from "components/dashboard/general/AdimisionChar";
 import Widget from "components/Widget";
 
+import './style.css'
+// CONECTOR REDUX
+import { connect } from "react-redux";
+import { llenarDatos } from "appRedux/actions/General";
+// BARRA DE PROGRESO
+import CircularProgress from "components/CircularProgress";
+// IMPORTAMOS EL PROVIDER
+import GeneralProvider from "../../../../providers/dashboard/General_provider";
+import LoginProvider from "../../../../providers/login_provider";
+import HerramientasProviders from '../../../../providers/herramientas_providers';
+
 class GeneralPage extends Component {
-    state = {}
-    
+    state = {
+        loaderCitas: false,
+    }
+
+    generalProvider = new GeneralProvider();
+    herramientasProvider = new HerramientasProviders();
+
+
+    datosCitas = async () => {
+        let fechaActual = new Date(Date.now()).toLocaleDateString();
+        // RESTAMOS 7 DIAS A LA FECHA EN MILISEGUNDOS
+        let fechaAnterior = new Date(Date.now() - 604800000).toLocaleDateString();
+
+        await LoginProvider.sesionExplota('Khronos92', '47813783');
+        const dataGrafico = await this.generalProvider.citasPorServicios(fechaActual, fechaAnterior);
+        const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
+
+        // VALIDAMOS SI HAY DATOS PARA MOSTRAR
+        if (dataActual[0].CENTRO === " NO HAY REGISTROS ENCONTRADOS") {
+            this.props.llenarDatos({
+                voluntarias: '000',
+                recitas: '000',
+                linea: '000',
+                interconsultas: '000',
+            })
+
+        } else {
+            const voluntarias = this.herramientasProvider.sumaValorColumna(dataActual, 'VOLUNTARIAS');
+            const recitas = this.herramientasProvider.sumaValorColumna(dataActual, 'RECITAS');
+            const interconsultas = this.herramientasProvider.sumaValorColumna(dataActual, 'INTERCONSULTAS');
+            const linea = this.herramientasProvider.sumaValorColumna(dataActual, 'ESSAENLINEA');
+            
+            this.props.llenarDatos({ voluntarias, recitas, linea, interconsultas })
+        };
+
+        console.log(dataGrafico);
+        console.log(dataActual);
+    }
+
+    componentDidMount = async () => {
+
+        await this.datosCitas();
+    }
+
     render() {
+
+        const { voluntarias, recitas, linea, interconsultas } = this.props
+
         return (
             <Auxiliary>
                 <Row>
@@ -19,11 +75,11 @@ class GeneralPage extends Component {
                             <div className="gx-card-body">
                                 <Row>
                                     <Col xl={6} lg={12} md={12} sm={12} xs={24}>
-                                        <BienvenidoCard />
+                                        <BienvenidoCard voluntarias={voluntarias} recitas={recitas} linea={linea} interconsultas={interconsultas} />
                                     </Col>
 
                                     <Col xl={12} lg={24} md={24} sm={24} xs={24} className="gx-visit-col">
-                                        <AdmisionChar />
+                                        {this.state.loaderCitas ? <CircularProgress className="heightLoader" /> : <AdmisionChar />}
                                     </Col>
 
                                     <Col xl={6} lg={12} md={12} sm={12} xs={24} className="gx-audi-col">
@@ -54,4 +110,12 @@ class GeneralPage extends Component {
     }
 }
 
-export default GeneralPage;
+const mapStateToProps = ({ General }) => {
+    return General;
+};
+
+const mapDispatchToProps = {
+    llenarDatos,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GeneralPage);

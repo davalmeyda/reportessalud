@@ -3,4 +3,4 @@ export * from './Auth';
 export * from './Notes';
 export * from './Common';
 export * from './Contact';
-export * from './Personalizado';
+export * from './General';

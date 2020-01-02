@@ -1,7 +1,9 @@
 import React from "react";
-import {Icon} from "antd";
+import { Icon } from "antd";
 
-const BienvenidoCard = () => {
+const BienvenidoCard = (props) => {
+
+  const { voluntarias, recitas, linea, interconsultas } = props
 
   return (
     <div className="gx-wel-ema gx-pt-xl-2">
@@ -9,21 +11,21 @@ const BienvenidoCard = () => {
       <p className="gx-fs-sm gx-text-uppercase">Citas realizadas en el dia</p>
       <ul className="gx-list-group">
         <li>
-          <Icon type="check"/>
-          <span>244 Citas Voluntarias</span>
+          <Icon type="check" />
+          <span>{voluntarias} Citas Voluntarias</span>
         </li>
         <li>
-          <Icon type="retweet"/>
-          <span>006 Recitas</span>
+          <Icon type="retweet" />
+          <span>{recitas} Recitas</span>
         </li>
         <li>
-          <Icon type="fullscreen-exit"/>
-          <span>000 Interconsultas</span>
+          <Icon type="fullscreen-exit" />
+          <span>{interconsultas} Interconsultas</span>
         </li>
         <li>
-          <Icon type="cloud"/>
-          <span>051 En Linea</span>
-        </li>        
+          <Icon type="cloud" />
+          <span>{linea} En Linea</span>
+        </li>
       </ul>
     </div>
 
