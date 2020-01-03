@@ -89,17 +89,17 @@ class GeneralPage extends Component {
                     </Col>
                     <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Programación de médicos en el día'>
-
+                            <h1>p</h1>
                         </Widget>
                     </Col>
                     <Col xl={10} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Atenciones en el día'>
-
+                            <h1>p</h1>
                         </Widget>
                     </Col>
                     <Col xl={14} lg={24} md={24} sm={24} xs={24}>
                         <Widget title=''>
-
+                            <h1>p</h1>
                         </Widget>
                     </Col>
                 </Row>

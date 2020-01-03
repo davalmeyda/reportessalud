@@ -1,6 +1,5 @@
 import React from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
-import { siteVisit } from "../../../routes/principal/Dashboard/General/data";
 
 const AdmisionChar = (props) => (
   <div className="gx-site-dash gx-pr-xl-5 gx-pt-3 gx-pt-xl-0 gx-pt-xl-2">

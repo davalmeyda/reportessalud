@@ -36,34 +36,9 @@ class GeneralProvider {
         return await this.conexionesProvider._traerdatosSGSSExplota('a', url);
     }
 
-    pacientesCitados = async (fechaFin, fechaInicio) => {
-        const url = '/explotacionDatos/servlet/CtrlControl?opt=adm116_xls';
-        const parametros = {
-            CAS: 822,
-            ORIGEN: 2,
-            fechaFin,
-            fechaInicio,
-            formatoArchivo: 'xls',
-            servicio: '00',
-            subactividad: '00',
-            tipoDocumento: '00',
-            actividad: '00',
-        }
-        return this.conexionesProvider._traerdatosExplota(parametros, url);
-    }
 
-    citasPorServicios = async (fechaFin, fechaInicio) => {
-        const url = '/explotacionDatos/servlet/CtrlControl?opt=adm13_xls';
-        const parametros = {
-            CAS: 822,
-            ORIGEN: 2,
-            fechaFin,
-            fechaInicio,
-            formatoArchivo: 'xls',
-            servicio: '00',
-        }
-        return this.conexionesProvider._traerdatosExplota(parametros, url);
-    }
+
+
 
     programacionMedicos = async (fechaFin, fechaInicio) => {
         const url = '/explotacionDatos/servlet/CtrlControl?opt=adm119_xls';
@@ -235,8 +210,38 @@ class GeneralProvider {
         return data1;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-    datosGraficoCitas = async (cantidadDias) => {        
+    pacientesCitados = async (fechaFin, fechaInicio) => {
+        const url = '/explotacionDatos/servlet/CtrlControl?opt=adm116_xls';
+        const parametros = {
+            CAS: 822,
+            ORIGEN: 2,
+            fechaFin,
+            fechaInicio,
+            formatoArchivo: 'xls',
+            servicio: '00',
+            subactividad: '00',
+            tipoDocumento: '00',
+            actividad: '00',
+        }
+        return this.conexionesProvider._traerdatosExplota(parametros, url);
+    }
+
+    citasPorServicios = async (fechaFin, fechaInicio) => {
+        const url = '/explotacionDatos/servlet/CtrlControl?opt=adm13_xls';
+        const parametros = {
+            CAS: 822,
+            ORIGEN: 2,
+            fechaFin,
+            fechaInicio,
+            formatoArchivo: 'xls',
+            servicio: '00',
+        }
+        return this.conexionesProvider._traerdatosExplota(parametros, url);
+    }
+
+    datosGraficoCitas = async (cantidadDias) => {
         const dataGraficoTotal = [];
         const milisegundosPorDia = 86400000;
         let contMilisegundos = 0;
@@ -245,26 +250,36 @@ class GeneralProvider {
         for (let index = 0; index < cantidadDias; index++) {
             const fffff = new Date(Date.now() - contMilisegundos);
             const fechaDiaAnterior = this.herramientasProvider.fechaActual(new Date(fffff));
-
-            const dataGrafico = await this.citasPorServicios(fechaDiaAnterior, fechaDiaAnterior);
-            // SUMAMOS LOS VALORES DE LAS CITAS
-            const voluntarias = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'VOLUNTARIAS'));
-            const recitas = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'RECITAS'));
-            const interconsultas = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'INTERCONSULTAS'));
-            const linea = parseInt(this.herramientasProvider.sumaValorColumna(dataGrafico, 'ESSAENLINEA'));
-
-            const total = voluntarias + recitas + interconsultas + linea;
-
             // OBTENERMOS LOS DIAS DE LA SEMANA Y SOLO TOMAMOS LOS 3 PRIMERO CARACTERES
             const dia = dias[fffff.getDay()].substr(0, 3) + ' ' + fffff.getDate();
+            // TODO: PROGRAMANDO CITAS DADAS
+            const dataGraficoDadas = await this.citasPorServicios(fechaDiaAnterior, fechaDiaAnterior);
+            // SUMAMOS LOS VALORES DE LAS CITAS
+            const voluntarias = parseInt(this.herramientasProvider.sumaValorColumna(dataGraficoDadas, 'VOLUNTARIAS'));
+            const recitas = parseInt(this.herramientasProvider.sumaValorColumna(dataGraficoDadas, 'RECITAS'));
+            const interconsultas = parseInt(this.herramientasProvider.sumaValorColumna(dataGraficoDadas, 'INTERCONSULTAS'));
+            const linea = parseInt(this.herramientasProvider.sumaValorColumna(dataGraficoDadas, 'ESSAENLINEA'));
 
+            const total = voluntarias + recitas + interconsultas + linea;
+            
+            // TODO: PROGRAMANDO CITAS ATENDIDAS
+            const dataGraficoAtendidas = await this.pacientesCitados(fechaDiaAnterior, fechaDiaAnterior);
+            
+            const temp = [];
+            dataGraficoAtendidas.forEach(d => {
+                if (d['ESTADO_CITA'] === 'ATENDIDA') {
+                    temp.push(d);
+                }
+            });
+            
             // AGREGAMOS EL ARRAY QUE UTILIZARA EL CHAR
             const data = {
                 name: dia,
                 'Dadas': total,
-                'Atendidas': 0
+                'Atendidas': temp.length,
             };
             dataGraficoTotal.unshift(data);
+            
             contMilisegundos += milisegundosPorDia;
         }
         console.log(dataGraficoTotal);
