@@ -16,8 +16,7 @@ class UserProfile extends Component {
 
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log(user)
+      if (user) {        
         this.setState({
           nombre: user.displayName,
           url: user.photoURL,

@@ -11,9 +11,17 @@ import AppNotification from "components/AppNotification";
 import MailNotification from "components/MailNotification";
 import Auxiliary from "util/Auxiliary";
 
-
 import { NAV_STYLE_DRAWER, NAV_STYLE_FIXED, NAV_STYLE_MINI_SIDEBAR, TAB_SIZE } from "../../constants/ThemeSetting";
 import { connect } from "react-redux";
+// BOTON DE CARGA
+import { Button } from "antd";
+// PROVIDERS
+import HerramientasProviders from "../../providers/herramientas_providers";
+import GeneralProvider from "../../providers/dashboard/General_provider";
+// REDUX
+import { llenarDatos, llenarGraficoCitas } from "appRedux/actions/General";
+// CONSTANTES
+import { DIAS_GRAFICO_CITAS } from "../../constants/configuraciones";
 
 const { Header } = Layout;
 
@@ -21,7 +29,51 @@ class Topbar extends Component {
 
   state = {
     searchText: '',
+    textActualizar: 'Actualizar',
+    loadingActualizar: false,
   };
+
+  herramientasProvider = new HerramientasProviders();
+  generalProvider = new GeneralProvider();
+
+  datosCitas = async () => {
+
+    let fechaActual = this.herramientasProvider.fechaActual(new Date(Date.now()));
+
+    const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
+    // VALIDAMOS SI HAY DATOS PARA MOSTRAR
+    if (dataActual[0].CENTRO === " NO HAY REGISTROS ENCONTRADOS") {
+      this.props.llenarDatos({
+        voluntarias: '0000',
+        recitas: '0000',
+        linea: '0000',
+        interconsultas: '0000',
+      });
+    } else {
+      const voluntarias = this.herramientasProvider.sumaValorColumna(dataActual, 'VOLUNTARIAS');
+      const recitas = this.herramientasProvider.sumaValorColumna(dataActual, 'RECITAS');
+      const interconsultas = this.herramientasProvider.sumaValorColumna(dataActual, 'INTERCONSULTAS');
+      const linea = this.herramientasProvider.sumaValorColumna(dataActual, 'ESSAENLINEA');
+
+      this.props.llenarDatos({ voluntarias, recitas, linea, interconsultas });
+    };
+    console.log(dataActual);
+
+    this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
+  }
+
+
+  actualizar = async () => {
+    this.setState({
+      textActualizar: 'Actualizando...',
+      loadingActualizar: true,
+    })
+    await this.datosCitas();
+    this.setState({
+      textActualizar: 'Actualizar',
+      loadingActualizar: false,
+    })
+  }
 
   languageMenu = () => (
     <CustomScrollbars className="gx-popover-lang-scroll">
@@ -95,6 +147,11 @@ class Topbar extends Component {
                 </li>
               </Auxiliary>
             }
+            <li>
+              <Button style={{ margin: '0px' }} onClick={this.actualizar} type="primary" loading={this.state.loadingActualizar}>
+                {this.state.textActualizar}
+              </Button>
+            </li>
             {/* <li className="gx-language">
               <Popover overlayClassName="gx-popover-horizantal" placement="bottomRight" content={this.languageMenu()}
                        trigger="click">
@@ -122,4 +179,9 @@ const mapStateToProps = ({ settings }) => {
   return { locale, navStyle, navCollapsed, width }
 };
 
-export default connect(mapStateToProps, { toggleCollapsedSideNav, switchLanguage })(Topbar);
+const mapDispatchToProps = {
+  llenarDatos,
+  llenarGraficoCitas,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, { toggleCollapsedSideNav, switchLanguage })(Topbar);

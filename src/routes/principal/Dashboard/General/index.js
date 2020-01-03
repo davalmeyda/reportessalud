@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-
+// FIREBASE
+import firebase from 'firebase'
+import 'firebase/auth';
+// COMPONENTES
 import { Col, Row } from "antd";
 import Auxiliary from "util/Auxiliary";
 import BienvenidoCard from "components/dashboard/general/BienvenidoCard";
 import SiteAudience from "components/dashboard/CRM/SiteAudience";
 import AdmisionChar from "components/dashboard/general/AdimisionChar";
 import Widget from "components/Widget";
-
+// ESTILOS
 import './style.css'
 // CONECTOR REDUX
 import { connect } from "react-redux";
@@ -15,12 +18,18 @@ import { llenarDatos, llenarGraficoCitas } from "appRedux/actions/General";
 import CircularProgress from "components/CircularProgress";
 // IMPORTAMOS EL PROVIDER
 import GeneralProvider from "../../../../providers/dashboard/General_provider";
-import LoginProvider from "../../../../providers/login_provider";
 import HerramientasProviders from '../../../../providers/herramientas_providers';
+// IMPORTAMOS CONFIGURACIONES
+import { DIAS_GRAFICO_CITAS } from "../../../../constants/configuraciones";
+// NOTIFICACIONES
+import { NotificationContainer, NotificationManager } from "react-notifications";
+import IntlMessages from "util/IntlMessages";
+
 
 class GeneralPage extends Component {
     state = {
         dataGrafico: [],
+        nombre: ''
     }
 
     generalProvider = new GeneralProvider();
@@ -28,12 +37,23 @@ class GeneralPage extends Component {
 
 
     datosCitas = async () => {
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({
+                    nombre: user.displayName,
+                });
+            }
+        });
         let fechaActual = this.herramientasProvider.fechaActual(new Date(Date.now()));
 
-        await LoginProvider.sesionExplota('Khronos92', '47813783');
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
         if (dataActual[0].CENTRO === " NO HAY REGISTROS ENCONTRADOS") {
+            // NOTIFICACION
+            NotificationManager.error(<IntlMessages id="verifique su conexion a internet" />, <IntlMessages
+                id="NO HAY SERVIDOR" />, 60000);
+
             this.props.llenarDatos({
                 voluntarias: '0000',
                 recitas: '0000',
@@ -52,18 +72,17 @@ class GeneralPage extends Component {
         console.log(dataActual);
 
         if (this.props.datosGraficos.length === 0) {
-            this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(15))
+            this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS))
         }
     }
 
     componentDidMount = async () => {
-
         await this.datosCitas();
     }
 
     render() {
 
-        const { voluntarias, recitas, linea, interconsultas } = this.props
+        const { voluntarias, recitas, linea, interconsultas, datosGraficos } = this.props
 
         return (
             <Auxiliary>
@@ -73,11 +92,11 @@ class GeneralPage extends Component {
                             <div className="gx-card-body">
                                 <Row>
                                     <Col xl={6} lg={12} md={12} sm={12} xs={24}>
-                                        <BienvenidoCard voluntarias={voluntarias} recitas={recitas} linea={linea} interconsultas={interconsultas} />
+                                        <BienvenidoCard nombre={this.state.nombre} voluntarias={voluntarias} recitas={recitas} linea={linea} interconsultas={interconsultas} />
                                     </Col>
 
                                     <Col xl={12} lg={24} md={24} sm={24} xs={24} className="gx-visit-col">
-                                        {this.props.datosGraficos.length === 0 ? <CircularProgress className="heightLoader" /> : <AdmisionChar data={this.props.datosGraficos} />}
+                                        {datosGraficos.length === 0 ? <CircularProgress className="heightLoader" /> : <AdmisionChar data={datosGraficos} />}
                                     </Col>
 
                                     <Col xl={6} lg={12} md={12} sm={12} xs={24} className="gx-audi-col">
@@ -103,13 +122,15 @@ class GeneralPage extends Component {
                         </Widget>
                     </Col>
                 </Row>
+                {/* ESPACIO PARA MOSTRAR LAS NOTIFICACIONES */}
+                <NotificationContainer/>
             </Auxiliary>
         );
     }
 }
 
-const mapStateToProps = ({ General }) => {
-    return General;
+const mapStateToProps = ({ General, auth }) => {
+    return { ...General, ...auth };
 };
 
 const mapDispatchToProps = {

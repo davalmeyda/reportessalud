@@ -3,11 +3,11 @@ import { Icon } from "antd";
 
 const BienvenidoCard = (props) => {
 
-  const { voluntarias, recitas, linea, interconsultas } = props
+  const { voluntarias, recitas, linea, interconsultas, nombre } = props
 
   return (
     <div className="gx-wel-ema gx-pt-xl-2">
-      <h1 className="gx-mb-3">Bienvenido David!</h1>
+      <h1 className="gx-mb-3">Bienvenido {nombre.split(' ')[0]}!</h1>
       <p className="gx-fs-sm gx-text-uppercase">Citas realizadas en el dia</p>
       <ul className="gx-list-group">
         <li>

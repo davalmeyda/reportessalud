@@ -4,47 +4,47 @@ import axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+// CONSTANTES DE CONFIGURACION
+import { USUARIO, CONTRASEÑA, CENTRO_ASISTENCIAL } from "../constants/configuraciones";
 
 class LoginProviders {
 
-    static sesionExplota = async (pws, uname)=>{
+    static sesionExplota = async () => {
         const cas = {
-            PASS: pws,
-            USER: uname,
-            centroAsistencial: 822,
+            PASS: USUARIO,
+            USER: CONTRASEÑA,
+            centroAsistencial: CENTRO_ASISTENCIAL,
             opt: 0,
             upd: 'indexCas',
         }
-    
-        const resp = await axios.post('/explotacionDatos/servlet/Index',
+
+        await axios.post('/explotacionDatos/servlet/Index',
             qs.stringify(cas),
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 withCredentials: true,
-    
+
             }).catch(function (error) {
                 // CARGA EL ERROR
                 console.log(error);
             });
-        console.log(resp);
     }
 
-    static sesionReportesSGSS = async ()=>{
-           
-        const resp = await axios.get('/sgssgxreport/servlet/hctrlmenu?2,822,47813783,V0000000000',            
+    static sesionReportesSGSS = async () => {
+
+        await axios.get('/sgssgxreport/servlet/hctrlmenu?2,822,47813783,V0000000000',
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 withCredentials: true,
-    
+
             }).catch(function (error) {
                 // CARGA EL ERROR
                 console.log(error);
             });
-        console.log(resp);
     }
 
     static registrarUsuario = async (user) => {
