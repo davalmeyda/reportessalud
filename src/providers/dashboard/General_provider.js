@@ -56,7 +56,7 @@ class GeneralProvider {
 
     gadgetPacientesCitados = async () => {
 
-        let fecha = new Date(Date.now()).toLocaleDateString();
+        let fecha = this.herramientasProvider.formatFecha(new Date(Date.now()));        
         // let fecha = '17/12/2019';
 
         // PRUEBAS CON PROGRAMACION        
@@ -85,14 +85,14 @@ class GeneralProvider {
     }
 
 
-    gadgetProgramacionMedicos = async () => {
+    gadgetProgramacionMedicos = async (fech) => {
 
-        let fecha = new Date(Date.now()).toLocaleDateString();
-        const fff = new Date();
-
-        let day = fff.getDate()
-        let month = fff.getMonth() + 1
-        let year = fff.getFullYear()
+        let fecha = this.herramientasProvider.formatFecha(fech);
+        
+        let day = fech.getDate()
+        let month = fech.getMonth() + 1
+        let year = fech.getFullYear()
+        console.log(day, month, year)
 
         // PRUEBAS CON PROGRAMACION        
         const programacion = await this.programacionMedicos(fecha, fecha);
@@ -165,8 +165,6 @@ class GeneralProvider {
 
             x.forEach((xx, ii) => {
                 index = (i + 1) * 100 + ii;
-
-
                 if (ii === 0) {
                     parent = index;
                     // color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
@@ -249,7 +247,7 @@ class GeneralProvider {
         // HACERMOS UN FOR CON LAS X CANTIDADES DE DATOS
         for (let index = 0; index < cantidadDias; index++) {
             const fffff = new Date(Date.now() - contMilisegundos);
-            const fechaDiaAnterior = this.herramientasProvider.fechaActual(new Date(fffff));
+            const fechaDiaAnterior = this.herramientasProvider.formatFecha(new Date(fffff));
             // OBTENERMOS LOS DIAS DE LA SEMANA Y SOLO TOMAMOS LOS 3 PRIMERO CARACTERES
             const dia = dias[fffff.getDay()].substr(0, 3) + ' ' + fffff.getDate();
             // TODO: PROGRAMANDO CITAS DADAS

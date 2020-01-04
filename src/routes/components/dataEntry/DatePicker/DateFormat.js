@@ -7,7 +7,6 @@ const {MonthPicker, RangePicker} = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 const monthFormat = 'YYYY/MM';
 
-
 const DateFormat = () => {
   return (
     <Card className="gx-card" title="Date Format">

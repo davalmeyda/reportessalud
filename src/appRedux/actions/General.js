@@ -1,4 +1,11 @@
-import { LLENAR_DATOS, LLENAR_GRAFICO_CITAS} from "../../constants/ActionTypes";
+import {
+    LLENAR_DATOS,
+    LLENAR_GRAFICO_CITAS,
+    CARGANDO_GRAFICO,
+    LLENAR_DATOS_PROGRAMACION,
+    CARGANDO_DATOS_PROGRAMACION,
+    MODIFICAR_FECHA_PROGRAMACION
+} from "../../constants/ActionTypes";
 
 export const llenarDatos = (datos) => {
     return {
@@ -6,9 +13,33 @@ export const llenarDatos = (datos) => {
         payload: datos,
     }
 };
-export const llenarGraficoCitas =(dataGrafico)=>{
+export const llenarGraficoCitas = (dataGrafico) => {
     return {
         type: LLENAR_GRAFICO_CITAS,
         payload: dataGrafico,
+    }
+}
+export const cargandoGraficoF = (cargando) => {
+    return {
+        type: CARGANDO_GRAFICO,
+        payload: cargando,
+    }
+}
+export const llenarDatosProgramacion = (datos) => {
+    return {
+        type: LLENAR_DATOS_PROGRAMACION,
+        payload: datos,
+    }
+}
+export const cargandoDatosProgramacionF = (cargando) => {
+    return {
+        type: CARGANDO_DATOS_PROGRAMACION,
+        payload: cargando,
+    }
+}
+export const modificarFechaProgramacion = (fecha)=>{
+    return {
+        type: MODIFICAR_FECHA_PROGRAMACION,
+        payload: fecha,
     }
 }

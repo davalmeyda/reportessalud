@@ -1,11 +1,23 @@
-import { LLENAR_DATOS, LLENAR_GRAFICO_CITAS } from "../../constants/ActionTypes";
+import {
+    LLENAR_DATOS,
+    LLENAR_GRAFICO_CITAS,
+    CARGANDO_GRAFICO,
+    LLENAR_DATOS_PROGRAMACION,
+    CARGANDO_DATOS_PROGRAMACION,
+    MODIFICAR_FECHA_PROGRAMACION
+} from "../../constants/ActionTypes";
 
 const INIT_STATE = {
     voluntarias: '0000',
     recitas: '0000',
     interconsultas: '0000',
     linea: '0000',
-    datosGraficos: []
+    datosGraficos: [],
+    cargandoGrafico: false,
+    // DATOS DE PROGRAMACION
+    datosProgramacion: [{}],
+    cargandoDatosProgramacion: false,
+    fechaProgramacion: '',
 };
 
 export default (state = INIT_STATE, action) => {
@@ -13,20 +25,41 @@ export default (state = INIT_STATE, action) => {
         case LLENAR_DATOS:
             const { voluntarias, recitas, interconsultas, linea } = action.payload;
             return {
+                ...state,
                 voluntarias,
                 recitas,
                 interconsultas,
                 linea,
-                datosGraficos: state.datosGraficos,
             }
         case LLENAR_GRAFICO_CITAS:
             const datosGraficos = action.payload;
             return {
-                voluntarias: state.voluntarias,
-                recitas: state.recitas,
-                interconsultas: state.interconsultas,
-                linea: state.linea,
+                ...state,
                 datosGraficos,
+            }
+        case CARGANDO_GRAFICO:
+            const cargandoGrafico = action.payload;
+            return {
+                ...state,
+                cargandoGrafico,
+            }
+        case LLENAR_DATOS_PROGRAMACION:
+            const datosProgramacion = action.payload;
+            return {
+                ...state,
+                datosProgramacion,
+            }
+        case CARGANDO_DATOS_PROGRAMACION:
+            const cargandoDatosProgramacion = action.payload;
+            return {
+                ...state,
+                cargandoDatosProgramacion,
+            }
+        case MODIFICAR_FECHA_PROGRAMACION:
+            const fechaProgramacion = action.payload;
+            return {
+                ...state,
+                fechaProgramacion,
             }
         default:
             return state;

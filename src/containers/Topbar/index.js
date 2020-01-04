@@ -38,7 +38,7 @@ class Topbar extends Component {
 
   datosCitas = async () => {
 
-    let fechaActual = this.herramientasProvider.fechaActual(new Date(Date.now()));
+    let fechaActual = this.herramientasProvider.formatFecha(new Date(Date.now()));
 
     const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
     // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -179,9 +179,11 @@ const mapStateToProps = ({ settings }) => {
   return { locale, navStyle, navCollapsed, width }
 };
 
-const mapDispatchToProps = {
-  llenarDatos,
-  llenarGraficoCitas,
-}
+// const mapDispatchToProps = {
+//   llenarDatos,
+//   llenarGraficoCitas,
+//   toggleCollapsedSideNav,
+//   switchLanguage
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, { toggleCollapsedSideNav, switchLanguage })(Topbar);
+export default connect(mapStateToProps, { toggleCollapsedSideNav, switchLanguage, llenarGraficoCitas, llenarDatos })(Topbar);

@@ -6,7 +6,7 @@ class HerramientasProviders {
             value;
     }
 
-    fechaActual = (fecha) => {
+    formatFecha = (fecha) => {
         let fechaActual = ''     
 
         const dia = this.PadLeft(fecha.getDate(), 2);

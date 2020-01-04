@@ -13,7 +13,7 @@ import Widget from "components/Widget";
 import './style.css'
 // CONECTOR REDUX
 import { connect } from "react-redux";
-import { llenarDatos, llenarGraficoCitas } from "appRedux/actions/General";
+import { llenarDatos, llenarGraficoCitas, cargandoGraficoF, llenarDatosProgramacion, cargandoDatosProgramacionF } from "appRedux/actions/General";
 // BARRA DE PROGRESO
 import CircularProgress from "components/CircularProgress";
 // IMPORTAMOS EL PROVIDER
@@ -24,28 +24,21 @@ import { DIAS_GRAFICO_CITAS } from "../../../../constants/configuraciones";
 // NOTIFICACIONES
 import { NotificationContainer, NotificationManager } from "react-notifications";
 import IntlMessages from "util/IntlMessages";
-
+// IMPORTAR TIMELINE
+import TimelineBloque from "../../../../components/dashboard/general/timeline/timeline_bloque";
 
 class GeneralPage extends Component {
     state = {
-        dataGrafico: [],
         nombre: ''
     }
 
     generalProvider = new GeneralProvider();
     herramientasProvider = new HerramientasProviders();
 
-
+    // INFORMACION DE CITAS Y BIENVENIDO
     datosCitas = async () => {
 
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                this.setState({
-                    nombre: user.displayName,
-                });
-            }
-        });
-        let fechaActual = this.herramientasProvider.fechaActual(new Date(Date.now()));
+        let fechaActual = this.herramientasProvider.formatFecha(new Date(Date.now()));
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -71,18 +64,38 @@ class GeneralPage extends Component {
 
         console.log(dataActual);
 
-        if (this.props.datosGraficos.length === 0) {
-            this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS))
-        }
-    }
+        this.props.cargandoGraficoF(true);
+        this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
 
-    componentDidMount = async () => {
-        await this.datosCitas();
+    }
+    datosProgramacion = async () => {
+        this.props.cargandoDatosProgramacionF(true);
+        const fecha = this.props.fechaProgramacion === '' ? new Date(Date.now()) : this.props.fechaProgramacion;
+        const programacion = await this.generalProvider.gadgetProgramacionMedicos(fecha);
+        console.log(programacion)
+        this.props.llenarDatosProgramacion(programacion);
+    }
+    // TIMELINE
+    componentDidMount = () => {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({
+                    nombre: user.displayName,
+                });
+            }
+        });
+        if (!this.props.cargandoGrafico) {
+            this.datosCitas();
+        }
+        if (!this.props.cargandoDatosProgramacion) {
+            this.datosProgramacion();
+        }
+
     }
 
     render() {
 
-        const { voluntarias, recitas, linea, interconsultas, datosGraficos } = this.props
+        const { voluntarias, recitas, linea, interconsultas, datosGraficos, datosProgramacion } = this.props
 
         return (
             <Auxiliary>
@@ -108,7 +121,7 @@ class GeneralPage extends Component {
                     </Col>
                     <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Programación de médicos en el día'>
-                            <h1>p</h1>
+                            {datosProgramacion.length === 1 ? <CircularProgress style={{ height: 'calc(100vh - 40px - 200px)' }} /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
                         </Widget>
                     </Col>
                     <Col xl={10} lg={24} md={24} sm={24} xs={24}>
@@ -123,19 +136,22 @@ class GeneralPage extends Component {
                     </Col>
                 </Row>
                 {/* ESPACIO PARA MOSTRAR LAS NOTIFICACIONES */}
-                <NotificationContainer/>
+                <NotificationContainer />
             </Auxiliary>
         );
     }
 }
 
-const mapStateToProps = ({ General, auth }) => {
-    return { ...General, ...auth };
+const mapStateToProps = ({ General }) => {
+    return General;
 };
 
 const mapDispatchToProps = {
     llenarDatos,
     llenarGraficoCitas,
+    cargandoGraficoF,
+    llenarDatosProgramacion,
+    cargandoDatosProgramacionF
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GeneralPage);
