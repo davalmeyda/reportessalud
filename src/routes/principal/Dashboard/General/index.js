@@ -121,7 +121,7 @@ class GeneralPage extends Component {
                     </Col>
                     <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Programación de médicos en el día'>
-                            {datosProgramacion.length === 1 ? <CircularProgress style={{ height: 'calc(100vh - 40px - 200px)' }} /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
+                            {datosProgramacion.length === 1 ? <CircularProgress className='programacion' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
                         </Widget>
                     </Col>
                     <Col xl={10} lg={24} md={24} sm={24} xs={24}>

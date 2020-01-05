@@ -52,16 +52,16 @@ class TimeLineBloque extends Component {
   herramientasProviders = new HerramientasProviders();
 
   cambio = async (value) => {
+    this.props.llenarDatosProgramacion([{}]);
     this.props.modificarFechaProgramacion(value._d);
     const programacion = await this.generalProvider.gadgetProgramacionMedicos(value._d);
     console.log(programacion)
-    this.props.llenarDatosProgramacion([{}]);
     this.props.llenarDatosProgramacion(programacion);
   }
 
   render() {
     const { currentZoom } = this.state;
-    const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(new Date(Date.now())): this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
+    const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(new Date(Date.now())) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
     return (
       <div>
         <div className="zoom-bar">
@@ -69,7 +69,16 @@ class TimeLineBloque extends Component {
             zoom={currentZoom}
             onZoomChange={this.handleZoomChange}
           /> */}
-          Fecha <DatePicker className="gx-mb-3 gx-w-100" onChange={value => this.cambio(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
+          <div className='ant-row gx-mb-3'>
+            <div className='ant-col ant-col-md-18'></div>
+            <div style={{margin: 'auto'}} className='ant-col ant-col-md-1'>
+              <div>Fecha</div>
+            </div>
+            <div className='ant-col ant-col-md-5' >
+              
+              <DatePicker className=" gx-w-100" onChange={value => this.cambio(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
+            </div>
+          </div>
         </div>
         <div className="gantt-container">
           <Gantt
