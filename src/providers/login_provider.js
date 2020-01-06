@@ -11,14 +11,14 @@ class LoginProviders {
 
     static sesionExplota = async () => {
         const cas = {
-            PASS: USUARIO,
-            USER: CONTRASEÑA,
+            PASS: CONTRASEÑA,
+            USER: USUARIO,
             centroAsistencial: CENTRO_ASISTENCIAL,
             opt: 0,
             upd: 'indexCas',
         }
 
-        await axios.post('/explotacionDatos/servlet/Index',
+        const resp = await axios.post('/explotacionDatos/servlet/Index',
             qs.stringify(cas),
             {
                 headers: {
@@ -30,6 +30,7 @@ class LoginProviders {
                 // CARGA EL ERROR
                 console.log(error);
             });
+        console.log(resp);
     }
 
     static sesionReportesSGSS = async () => {

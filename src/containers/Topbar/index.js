@@ -7,8 +7,8 @@ import languageData from "./languageData";
 import { switchLanguage, toggleCollapsedSideNav } from "../../appRedux/actions/Setting";
 import SearchBox from "components/SearchBox";
 import UserInfo from "components/UserInfo";
-import AppNotification from "components/AppNotification";
-import MailNotification from "components/MailNotification";
+// import AppNotification from "components/AppNotification";
+// import MailNotification from "components/MailNotification";
 import Auxiliary from "util/Auxiliary";
 
 import { NAV_STYLE_DRAWER, NAV_STYLE_FIXED, NAV_STYLE_MINI_SIDEBAR, TAB_SIZE } from "../../constants/ThemeSetting";
@@ -126,7 +126,8 @@ class Topbar extends Component {
                 <span className="gx-pointer gx-d-block"><i className="icon icon-search-new" /></span>
               </Popover>
             </li>
-            {width >= TAB_SIZE ? null :
+            {/* NOTIFICACIONES MODO CELULAR */}
+            {/* {width >= TAB_SIZE ? null :
               <Auxiliary>
                 <li className="gx-notify">
                   <Popover overlayClassName="gx-popover-horizantal" placement="bottomRight" content={<AppNotification />}
@@ -145,7 +146,7 @@ class Topbar extends Component {
                   </Popover>
                 </li>
               </Auxiliary>
-            }
+            } */}
             <li>
               <Button style={{ margin: '0px' }} onClick={this.actualizar} type="primary" loading={this.state.loadingActualizar}>
                 {this.state.textActualizar}
