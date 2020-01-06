@@ -13,7 +13,7 @@ import Widget from "components/Widget";
 import './style.css'
 // CONECTOR REDUX
 import { connect } from "react-redux";
-import { llenarDatos, llenarGraficoCitas, cargandoGraficoF, llenarDatosProgramacion, cargandoDatosProgramacionF } from "appRedux/actions/General";
+import { llenarDatos, llenarGraficoCitas, cargandoGraficoF, llenarDatosProgramacion, cargandoDatosProgramacionF, modificarFechaProgramacion } from "appRedux/actions/General";
 // BARRA DE PROGRESO
 import CircularProgress from "components/CircularProgress";
 // IMPORTAMOS EL PROVIDER
@@ -26,6 +26,10 @@ import { NotificationContainer, NotificationManager } from "react-notifications"
 import IntlMessages from "util/IntlMessages";
 // IMPORTAR TIMELINE
 import TimelineBloque from "../../../../components/dashboard/general/timeline/timeline_bloque";
+// DATAPICKER PARA LA FECHA
+import { DatePicker } from "antd";
+import moment from "moment";
+
 
 class GeneralPage extends Component {
     state = {
@@ -33,12 +37,12 @@ class GeneralPage extends Component {
     }
 
     generalProvider = new GeneralProvider();
-    herramientasProvider = new HerramientasProviders();
+    herramientasProviders = new HerramientasProviders();
 
     // INFORMACION DE CITAS Y BIENVENIDO
     datosCitas = async () => {
 
-        let fechaActual = this.herramientasProvider.formatFecha(new Date(Date.now()));
+        let fechaActual = this.herramientasProviders.formatFecha(new Date(Date.now()));
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -54,10 +58,10 @@ class GeneralPage extends Component {
                 interconsultas: '0000',
             });
         } else {
-            const voluntarias = this.herramientasProvider.sumaValorColumna(dataActual, 'VOLUNTARIAS');
-            const recitas = this.herramientasProvider.sumaValorColumna(dataActual, 'RECITAS');
-            const interconsultas = this.herramientasProvider.sumaValorColumna(dataActual, 'INTERCONSULTAS');
-            const linea = this.herramientasProvider.sumaValorColumna(dataActual, 'ESSAENLINEA');
+            const voluntarias = this.herramientasProviders.sumaValorColumna(dataActual, 'VOLUNTARIAS');
+            const recitas = this.herramientasProviders.sumaValorColumna(dataActual, 'RECITAS');
+            const interconsultas = this.herramientasProviders.sumaValorColumna(dataActual, 'INTERCONSULTAS');
+            const linea = this.herramientasProviders.sumaValorColumna(dataActual, 'ESSAENLINEA');
 
             this.props.llenarDatos({ voluntarias, recitas, linea, interconsultas });
         };
@@ -90,13 +94,19 @@ class GeneralPage extends Component {
         if (!this.props.cargandoDatosProgramacion) {
             this.datosProgramacion();
         }
+    }
 
+    cambioFecha = async (value) => {
+        this.props.llenarDatosProgramacion([{}]);
+        this.props.modificarFechaProgramacion(value._d);
+        const programacion = await this.generalProvider.gadgetProgramacionMedicos(value._d);
+        console.log(programacion)
+        this.props.llenarDatosProgramacion(programacion);
     }
 
     render() {
-
         const { voluntarias, recitas, linea, interconsultas, datosGraficos, datosProgramacion } = this.props
-
+        const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(new Date(Date.now())) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
         return (
             <Auxiliary>
                 <Row>
@@ -119,12 +129,34 @@ class GeneralPage extends Component {
                             </div>
                         </div>
                     </Col>
-                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                        <Widget title='Programación de médicos en el día'>
+                    <Col xl={16} lg={24} md={24} sm={24} xs={24}>
+                        <div className='ant-card gx-card-widget ant-card-bordered'>
+                            <div className="ant-card-head">
+                                <div className='ant-card-head-wrapper'>
+                                    <div className='ant-card-head-title'>
+                                        <div className='ant-row'>
+                                            <div style={{ margin: 'auto' }} className='ant-col ant-col-md-17'>
+                                                Programación de médicos en el día
+                                            </div>
+                                            <div style={{ margin: 'auto' }} className='ant-col ant-col-md-2'>
+                                                <div>Fecha</div>
+                                            </div>
+                                            <div className='ant-col ant-col-md-5' >
+                                                <DatePicker className=" gx-w-100" onChange={value => this.cambioFecha(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='ant-card-body'>
+                                {datosProgramacion.length === 1 ? <CircularProgress className='programacion' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
+                            </div>
+                        </div>
+                        {/* <Widget title='Programación de médicos en el día'>
                             {datosProgramacion.length === 1 ? <CircularProgress className='programacion' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
-                        </Widget>
+                        </Widget> */}
                     </Col>
-                    <Col xl={10} lg={24} md={24} sm={24} xs={24}>
+                    <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Atenciones en el día'>
                             <h1>p</h1>
                         </Widget>
@@ -151,7 +183,8 @@ const mapDispatchToProps = {
     llenarGraficoCitas,
     cargandoGraficoF,
     llenarDatosProgramacion,
-    cargandoDatosProgramacionF
+    cargandoDatosProgramacionF,
+    modificarFechaProgramacion,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GeneralPage);

@@ -62,7 +62,6 @@ class Topbar extends Component {
     this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
   }
 
-
   actualizar = async () => {
     this.setState({
       textActualizar: 'Actualizando...',
@@ -174,7 +173,7 @@ class Topbar extends Component {
   }
 }
 
-const mapStateToProps = ({ settings }) => {
+const mapStateToProps = ({ settings, General }) => {
   const { locale, navStyle, navCollapsed, width } = settings;
   return { locale, navStyle, navCollapsed, width }
 };

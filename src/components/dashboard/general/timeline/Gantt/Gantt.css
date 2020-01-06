@@ -1,3 +1,6 @@
 .gantt-container{
   height:calc(100vh - 40px - 200px);
 }
+.scaled {
+  transform: scale(0.8);   
+}
