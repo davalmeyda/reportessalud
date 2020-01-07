@@ -19,7 +19,7 @@ import { Button } from "antd";
 import HerramientasProviders from "../../providers/herramientas_providers";
 import GeneralProvider from "../../providers/dashboard/General_provider";
 // REDUX
-import { llenarDatos, llenarGraficoCitas } from "appRedux/actions/General";
+import { llenarDatos, llenarGraficoCitas, llenarEdadesCitas } from "appRedux/actions/General";
 // CONSTANTES
 import { DIAS_GRAFICO_CITAS } from "../../constants/configuraciones";
 
@@ -58,7 +58,8 @@ class Topbar extends Component {
       this.props.llenarDatos({ voluntarias, recitas, linea, interconsultas });
     };
     console.log(dataActual);
-
+    // LLENAR EDADES POR CITAS
+    this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(new Date(Date.now())));
     this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
   }
 
@@ -186,4 +187,4 @@ const mapStateToProps = ({ settings, General }) => {
 //   switchLanguage
 // }
 
-export default connect(mapStateToProps, { toggleCollapsedSideNav, switchLanguage, llenarGraficoCitas, llenarDatos })(Topbar);
+export default connect(mapStateToProps, { toggleCollapsedSideNav, switchLanguage, llenarGraficoCitas, llenarDatos, llenarEdadesCitas })(Topbar);

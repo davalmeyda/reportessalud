@@ -4,7 +4,8 @@ import {
     CARGANDO_GRAFICO,
     LLENAR_DATOS_PROGRAMACION,
     CARGANDO_DATOS_PROGRAMACION,
-    MODIFICAR_FECHA_PROGRAMACION
+    MODIFICAR_FECHA_PROGRAMACION,
+    LLENAR_EDADES_CITAS
 } from "../../constants/ActionTypes";
 
 export const llenarDatos = (datos) => {
@@ -41,5 +42,11 @@ export const modificarFechaProgramacion = (fecha)=>{
     return {
         type: MODIFICAR_FECHA_PROGRAMACION,
         payload: fecha,
+    }
+}
+export const llenarEdadesCitas = (data)=>{
+    return {
+        type: LLENAR_EDADES_CITAS,
+        payload: data,
     }
 }

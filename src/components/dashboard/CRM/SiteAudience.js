@@ -9,10 +9,10 @@ const SiteAudience = () => {
       <h6 className="gx-text-uppercase gx-mb-2 gx-mb-sm-4">SITE AUDIENCE</h6>
       <ul className="gx-line-indicator">
         <li>
-          <LineIndicator width="56%" title="Male" color="cyan" value="56%"/>
+          <LineIndicator width="70%" title="Male" color="cyan" value="70%"/>
         </li>
         <li>
-          <LineIndicator width="42%" title="Female" color="geekblue" value="42%"/>
+          <LineIndicator width="20%" title="Female" color="geekblue" value="20%"/>
         </li>
         <li>
           <LineIndicator width="20%" title="Others" color="orange" value="20%"/>

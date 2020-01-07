@@ -6,21 +6,29 @@ import 'firebase/auth';
 import { Col, Row } from "antd";
 import Auxiliary from "util/Auxiliary";
 import BienvenidoCard from "components/dashboard/general/BienvenidoCard";
-import SiteAudience from "components/dashboard/CRM/SiteAudience";
+import SiteAudience from "components/dashboard/general/SiteAudience";
 import AdmisionChar from "components/dashboard/general/AdimisionChar";
 import Widget from "components/Widget";
 // ESTILOS
 import './style.css'
 // CONECTOR REDUX
 import { connect } from "react-redux";
-import { llenarDatos, llenarGraficoCitas, cargandoGraficoF, llenarDatosProgramacion, cargandoDatosProgramacionF, modificarFechaProgramacion } from "appRedux/actions/General";
+import {
+    llenarDatos,
+    llenarGraficoCitas,
+    cargandoGraficoF,
+    llenarDatosProgramacion,
+    cargandoDatosProgramacionF,
+    modificarFechaProgramacion,
+    llenarEdadesCitas
+} from "appRedux/actions/General";
 // BARRA DE PROGRESO
 import CircularProgress from "components/CircularProgress";
 // IMPORTAMOS EL PROVIDER
 import GeneralProvider from "../../../../providers/dashboard/General_provider";
 import HerramientasProviders from '../../../../providers/herramientas_providers';
 // IMPORTAMOS CONFIGURACIONES
-import { DIAS_GRAFICO_CITAS } from "../../../../constants/configuraciones";
+import { DIAS_GRAFICO_CITAS, FECHAACTUAL } from "../../../../constants/configuraciones";
 // NOTIFICACIONES
 import { NotificationContainer, NotificationManager } from "react-notifications";
 import IntlMessages from "util/IntlMessages";
@@ -42,7 +50,7 @@ class GeneralPage extends Component {
     // INFORMACION DE CITAS Y BIENVENIDO
     datosCitas = async () => {
 
-        let fechaActual = this.herramientasProviders.formatFecha(new Date(Date.now()));
+        let fechaActual = this.herramientasProviders.formatFecha(FECHAACTUAL);
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -66,21 +74,23 @@ class GeneralPage extends Component {
             this.props.llenarDatos({ voluntarias, recitas, linea, interconsultas });
         };
 
-        console.log(dataActual);
-
+        console.log(dataActual, 'Data de citas del dia');
+        // LLENAR EDADES POR CITAS
+        this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(FECHAACTUAL));
+        // LLENAR GRAFICO DE CITAS
         this.props.cargandoGraficoF(true);
-        this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
-
+        this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS, FECHAACTUAL));
     }
     datosProgramacion = async () => {
         this.props.cargandoDatosProgramacionF(true);
-        const fecha = this.props.fechaProgramacion === '' ? new Date(Date.now()) : this.props.fechaProgramacion;
+        const fecha = this.props.fechaProgramacion === '' ? FECHAACTUAL : this.props.fechaProgramacion;
         const programacion = await this.generalProvider.gadgetProgramacionMedicos(fecha);
-        console.log(programacion)
+        console.log(programacion, 'Obtener Programacion');
         this.props.llenarDatosProgramacion(programacion);
     }
     // TIMELINE
     componentDidMount = () => {
+        this.generalProvider.ooo();
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({
@@ -106,7 +116,7 @@ class GeneralPage extends Component {
 
     render() {
         const { voluntarias, recitas, linea, interconsultas, datosGraficos, datosProgramacion } = this.props
-        const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(new Date(Date.now())) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
+        const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(FECHAACTUAL) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
         return (
             <Auxiliary>
                 <Row>
@@ -123,7 +133,7 @@ class GeneralPage extends Component {
                                     </Col>
 
                                     <Col xl={6} lg={12} md={12} sm={12} xs={24} className="gx-audi-col">
-                                        <SiteAudience />
+                                        <SiteAudience data={this.props.edadesCitas} />
                                     </Col>
                                 </Row>
                             </div>
@@ -185,6 +195,7 @@ const mapDispatchToProps = {
     llenarDatosProgramacion,
     cargandoDatosProgramacionF,
     modificarFechaProgramacion,
+    llenarEdadesCitas
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GeneralPage);

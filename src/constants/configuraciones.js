@@ -6,3 +6,4 @@ export const NOMBRE_IPRESS = 'IPRESS SAN CARLOS';
 
 // CONFIGURACIONES DE DASHBOARD GENERAL
 export const DIAS_GRAFICO_CITAS = 15;
+export const FECHAACTUAL = new Date(Date.now() - (86400000 * 0));

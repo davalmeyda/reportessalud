@@ -4,7 +4,8 @@ import {
     CARGANDO_GRAFICO,
     LLENAR_DATOS_PROGRAMACION,
     CARGANDO_DATOS_PROGRAMACION,
-    MODIFICAR_FECHA_PROGRAMACION
+    MODIFICAR_FECHA_PROGRAMACION,
+    LLENAR_EDADES_CITAS
 } from "../../constants/ActionTypes";
 
 const INIT_STATE = {
@@ -18,6 +19,8 @@ const INIT_STATE = {
     datosProgramacion: [{}],
     cargandoDatosProgramacion: false,
     fechaProgramacion: '',
+    // LINEA DE EDADES
+    edadesCitas:[],
 };
 
 export default (state = INIT_STATE, action) => {
@@ -60,6 +63,12 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state,
                 fechaProgramacion,
+            }
+        case LLENAR_EDADES_CITAS:
+            const edadesCitas = action.payload;
+            return{
+                ...state,
+                edadesCitas,
             }
         default:
             return state;

@@ -10,8 +10,8 @@ const AdmisionChar = (props) => (
         <XAxis dataKey="name" />
         <Tooltip />
         <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-        <Area type='monotone' dataKey='Dadas' fillOpacity={1} stroke='#038FDE' fill='#038FDE' />
-        <Area type='monotone' dataKey='Atendidas' fillOpacity={1} stroke='#FE9E15' fill='#FE9E15' />
+        <Area type='monotone' dataKey='Se Dieron' fillOpacity={1} stroke='#038FDE' fill='#038FDE' />
+        <Area type='monotone' dataKey='Se Atendieron' fillOpacity={1} stroke='#FE9E15' fill='#FE9E15' />
       </AreaChart>
     </ResponsiveContainer>
   </div>
