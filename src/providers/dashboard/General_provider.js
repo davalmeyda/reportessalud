@@ -321,6 +321,28 @@ class GeneralProvider {
         const edades = [edad5, edad18, edadmas];
         return edades;
     }
+
+
+    odonto = async (fecha) => {
+        const url = '/explotacionDatos/servlet/CtrlControl?opt=cext13_v3';
+        const parametros = {
+            CAS: 822,
+            ORIGEN: 2,
+            actividad: 91,
+            fechaFin: fecha,
+            fechaInicio: '16/10/2019',
+            formatoArchivo: 'xls',
+            numeroDocumento: '',
+            servicio: 'E11',
+            subactividad: '074',
+            tipo: 2,
+            tipoDocumento: 1,
+            tipoReporte: 4,
+        }
+        const data = await this.conexionesProvider._traerdatosExplota(parametros, url, 'otroxls');        
+        return data;
+    }
+
 }
 
 export default GeneralProvider;

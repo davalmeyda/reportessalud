@@ -21,7 +21,7 @@ import GeneralProvider from "../../providers/dashboard/General_provider";
 // REDUX
 import { llenarDatos, llenarGraficoCitas, llenarEdadesCitas } from "appRedux/actions/General";
 // CONSTANTES
-import { DIAS_GRAFICO_CITAS } from "../../constants/configuraciones";
+import { DIAS_GRAFICO_CITAS, FECHAACTUAL } from "../../constants/configuraciones";
 
 const { Header } = Layout;
 
@@ -38,7 +38,7 @@ class Topbar extends Component {
 
   datosCitas = async () => {
 
-    let fechaActual = this.herramientasProvider.formatFecha(new Date(Date.now()));
+    let fechaActual = this.herramientasProvider.formatFecha(FECHAACTUAL);
 
     const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
     // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -59,8 +59,8 @@ class Topbar extends Component {
     };
     console.log(dataActual);
     // LLENAR EDADES POR CITAS
-    this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(new Date(Date.now())));
-    this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS));
+    this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(FECHAACTUAL));
+    this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS, FECHAACTUAL));
   }
 
   actualizar = async () => {

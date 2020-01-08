@@ -49,6 +49,7 @@ class ConexionesProvider {
                 const result = papaparse.parse(resp1.data, {
                     delimiter: "|",
                     header: true,
+                    withCredentials: true
                 });
                 const data = result.data;
                 // console.log(data);
@@ -68,6 +69,20 @@ class ConexionesProvider {
                 })
                 console.log(blob);
                 return resp1.data;
+            } else if (tipo === 'otroxls'){
+                resp1 = await axios.get(`${url}_xls&fn=${txt}`);
+                // DATA EN BRUTO
+                // console.log(resp1.data);
+                // CONVIRTIENDO A JSON
+                const result = papaparse.parse(resp1.data, {
+                    delimiter: "|",
+                    header: true,
+                    withCredentials: true
+                });
+                const data = result.data;
+                // console.log(data);
+                // ARCHIVO JSON
+                return data;
             }
         }
 

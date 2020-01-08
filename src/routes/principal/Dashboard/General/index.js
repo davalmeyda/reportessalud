@@ -41,7 +41,8 @@ import moment from "moment";
 
 class GeneralPage extends Component {
     state = {
-        nombre: ''
+        nombre: '',
+        ronald: 0,
     }
 
     generalProvider = new GeneralProvider();
@@ -104,6 +105,23 @@ class GeneralPage extends Component {
         if (!this.props.cargandoDatosProgramacion) {
             this.datosProgramacion();
         }
+
+        this.odontoRonald()
+    }
+
+    odontoRonald = async () => {
+        // RONALD
+        let fechaActual = this.herramientasProviders.formatFecha(FECHAACTUAL);
+        const da = await this.generalProvider.odonto(fechaActual);
+        const resultado = [];
+        da.forEach(d => {
+            if (d['CODPROCED'] === 'D1225' && parseInt(d['ANNOS']) >= 5 && parseInt(d['ANNOS']) <= 11) {
+                resultado.push(d);
+            }
+        });
+        this.setState({
+            ronald: resultado.length,
+        })
     }
 
     cambioFecha = async (value) => {
@@ -168,7 +186,7 @@ class GeneralPage extends Component {
                     </Col>
                     <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Atenciones en el día'>
-                            <h1>p</h1>
+                            <h1>Odonnto {this.state.ronald}</h1>
                         </Widget>
                     </Col>
                     <Col xl={14} lg={24} md={24} sm={24} xs={24}>
