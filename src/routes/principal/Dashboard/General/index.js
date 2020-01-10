@@ -37,12 +37,14 @@ import TimelineBloque from "../../../../components/dashboard/general/timeline/ti
 // DATAPICKER PARA LA FECHA
 import { DatePicker } from "antd";
 import moment from "moment";
-
+// PDF
+import { PDFReader } from 'reactjs-pdf-reader';
 
 class GeneralPage extends Component {
     state = {
         nombre: '',
         ronald: 0,
+        pdfDiferimiento: '',
     }
 
     generalProvider = new GeneralProvider();
@@ -82,6 +84,7 @@ class GeneralPage extends Component {
         this.props.cargandoGraficoF(true);
         this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS, FECHAACTUAL));
     }
+    // TIMELINE
     datosProgramacion = async () => {
         this.props.cargandoDatosProgramacionF(true);
         const fecha = this.props.fechaProgramacion === '' ? FECHAACTUAL : this.props.fechaProgramacion;
@@ -89,9 +92,24 @@ class GeneralPage extends Component {
         console.log(programacion, 'Obtener Programacion');
         this.props.llenarDatosProgramacion(programacion);
     }
-    // TIMELINE
+
+    pdfDiferimiento = async () => {
+        let base64data;
+        let data = '';
+        const blob = await this.generalProvider.pdfDiferimientoExplota();
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+            base64data = reader.result;
+            data = base64data.split(',')[1];
+            this.setState({
+                pdfDiferimiento: data,
+            });
+        }
+    }
+
     componentDidMount = () => {
-        this.generalProvider.ooo();
+        this.pdfDiferimiento();
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({
@@ -191,7 +209,7 @@ class GeneralPage extends Component {
                     </Col>
                     <Col xl={14} lg={24} md={24} sm={24} xs={24}>
                         <Widget title=''>
-                            <h1>p</h1>
+                            {this.state.pdfDiferimiento === '' ? <CircularProgress className="heightLoader" /> : <PDFReader width='500' data={atob(this.state.pdfDiferimiento)} />}
                         </Widget>
                     </Col>
                 </Row>

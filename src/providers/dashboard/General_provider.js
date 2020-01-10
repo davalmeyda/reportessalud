@@ -16,17 +16,6 @@ class GeneralProvider {
         return suma;
     }
 
-    mayor = (lista, columna, ref) => {
-        let r = 0;
-        let mayor = "";
-        lista.forEach(d => {
-            if (parseInt(d[ref]) > r) {
-                r = parseInt(d[ref]);
-                mayor = d[columna];
-            }
-        });
-        return mayor;
-    }
 
     obtenerPDFDiferimiento = async (fecha) => {
         const fec = fecha.split('/');
@@ -36,7 +25,7 @@ class GeneralProvider {
         return await this.conexionesProvider._traerdatosSGSSExplota('a', url);
     }
 
-    ooo = async () => {
+    pdfDiferimientoExplota = async () => {
         const url = '/explotacionDatos/servlet/CtrlControl?opt=diferimiento_1';
         const parametros = {
             CAS: 822,
@@ -50,7 +39,6 @@ class GeneralProvider {
             tipoReporte: '01',
         }
         const aaa = await this.conexionesProvider._traerdatosExplota(parametros, url, 'pdf');
-        console.log(aaa);
         return aaa
     }
 
@@ -101,6 +89,17 @@ class GeneralProvider {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+    mayor = (lista, columna, ref) => {
+        let r = 0;
+        let mayor = "";
+        lista.forEach(d => {
+            if (parseInt(d[ref]) > r) {
+                r = parseInt(d[ref]);
+                mayor = d[columna];
+            }
+        });
+        return mayor;
+    }
     gadgetProgramacionMedicos = async (fech) => {
 
         let fecha = this.herramientasProvider.formatFecha(fech);
@@ -339,7 +338,7 @@ class GeneralProvider {
             tipoDocumento: 1,
             tipoReporte: 4,
         }
-        const data = await this.conexionesProvider._traerdatosExplota(parametros, url, 'otroxls');        
+        const data = await this.conexionesProvider._traerdatosExplota(parametros, url, 'otroxls');
         return data;
     }
 
