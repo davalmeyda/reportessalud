@@ -28,7 +28,7 @@ import CircularProgress from "components/CircularProgress";
 import GeneralProvider from "../../../../providers/dashboard/General_provider";
 import HerramientasProviders from '../../../../providers/herramientas_providers';
 // IMPORTAMOS CONFIGURACIONES
-import { DIAS_GRAFICO_CITAS, FECHAACTUAL } from "../../../../constants/configuraciones";
+import { DIAS_GRAFICO_CITAS, FECHA_ACTUAL, FECHA_INICIO_DIFERIMIENTO } from "../../../../constants/configuraciones";
 // NOTIFICACIONES
 import { NotificationContainer, NotificationManager } from "react-notifications";
 import IntlMessages from "util/IntlMessages";
@@ -45,7 +45,10 @@ class GeneralPage extends Component {
         nombre: '',
         ronald: 0,
         pdfDiferimiento: '',
+        pdfAlto: '0px',
     }
+    // REFERENCIA DE TAMAÑO PARA EL PDF
+    refDiv = React.createRef();
 
     generalProvider = new GeneralProvider();
     herramientasProviders = new HerramientasProviders();
@@ -53,7 +56,7 @@ class GeneralPage extends Component {
     // INFORMACION DE CITAS Y BIENVENIDO
     datosCitas = async () => {
 
-        let fechaActual = this.herramientasProviders.formatFecha(FECHAACTUAL);
+        let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
@@ -79,24 +82,25 @@ class GeneralPage extends Component {
 
         console.log(dataActual, 'Data de citas del dia');
         // LLENAR EDADES POR CITAS
-        this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(FECHAACTUAL));
+        this.props.llenarEdadesCitas(await this.generalProvider.edadesCitas(FECHA_ACTUAL));
         // LLENAR GRAFICO DE CITAS
         this.props.cargandoGraficoF(true);
-        this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS, FECHAACTUAL));
+        this.props.llenarGraficoCitas(await this.generalProvider.datosGraficoCitas(DIAS_GRAFICO_CITAS, FECHA_ACTUAL));
     }
     // TIMELINE
     datosProgramacion = async () => {
         this.props.cargandoDatosProgramacionF(true);
-        const fecha = this.props.fechaProgramacion === '' ? FECHAACTUAL : this.props.fechaProgramacion;
+        const fecha = this.props.fechaProgramacion === '' ? FECHA_ACTUAL : this.props.fechaProgramacion;
         const programacion = await this.generalProvider.gadgetProgramacionMedicos(fecha);
         console.log(programacion, 'Obtener Programacion');
         this.props.llenarDatosProgramacion(programacion);
     }
 
     pdfDiferimiento = async () => {
+        let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
         let base64data;
         let data = '';
-        const blob = await this.generalProvider.pdfDiferimientoExplota();
+        const blob = await this.generalProvider.pdfDiferimientoExplota(FECHA_INICIO_DIFERIMIENTO, fechaActual);
         var reader = new FileReader();
         reader.readAsDataURL(blob);
         reader.onloadend = () => {
@@ -110,6 +114,9 @@ class GeneralPage extends Component {
 
     componentDidMount = () => {
         this.pdfDiferimiento();
+        this.setState({
+            pdfAlto: (this.refDiv.current.clientWidth * 0.95) + 'px',
+        })
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({
@@ -124,12 +131,12 @@ class GeneralPage extends Component {
             this.datosProgramacion();
         }
 
-        this.odontoRonald()
+        this.odontoRonald();
     }
 
     odontoRonald = async () => {
         // RONALD
-        let fechaActual = this.herramientasProviders.formatFecha(FECHAACTUAL);
+        let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
         const da = await this.generalProvider.odonto(fechaActual);
         const resultado = [];
         da.forEach(d => {
@@ -152,7 +159,7 @@ class GeneralPage extends Component {
 
     render() {
         const { voluntarias, recitas, linea, interconsultas, datosGraficos, datosProgramacion } = this.props
-        const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(FECHAACTUAL) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
+        const fecha = this.props.fechaProgramacion === '' ? this.herramientasProviders.formatFecha(FECHA_ACTUAL) : this.herramientasProviders.formatFecha(this.props.fechaProgramacion);
         return (
             <Auxiliary>
                 <Row>
@@ -160,11 +167,11 @@ class GeneralPage extends Component {
                         <div className="gx-card">
                             <div className="gx-card-body">
                                 <Row>
-                                    <Col xl={6} lg={12} md={12} sm={12} xs={24}>
+                                    <Col xl={5} lg={12} md={12} sm={12} xs={24}>
                                         <BienvenidoCard nombre={this.state.nombre} voluntarias={voluntarias} recitas={recitas} linea={linea} interconsultas={interconsultas} />
                                     </Col>
 
-                                    <Col xl={12} lg={24} md={24} sm={24} xs={24} className="gx-visit-col">
+                                    <Col xl={13} lg={24} md={24} sm={24} xs={24} className="gx-visit-col">
                                         {datosGraficos.length === 0 ? <CircularProgress className="heightLoader" /> : <AdmisionChar data={datosGraficos} />}
                                     </Col>
 
@@ -175,19 +182,34 @@ class GeneralPage extends Component {
                             </div>
                         </div>
                     </Col>
-                    <Col xl={16} lg={24} md={24} sm={24} xs={24}>
+                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                        <div ref={this.refDiv} className='ant-card gx-card-widget ant-card-bordered'>
+                            <div className="ant-card-head">
+                                <div className='ant-card-head-wrapper'>
+                                    <div className='ant-card-head-title'>
+                                        {/* TITULO DIFERIMIENTO */}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ height: this.state.pdfAlto === '0px' ? 'auto' : this.state.pdfAlto, overflow: 'hidden' }} className='ant-card-body'>
+                                {this.state.pdfDiferimiento === '' ? <CircularProgress className="tamañoAuto" /> : <PDFReader width={this.refDiv.current.clientWidth - 60} data={atob(this.state.pdfDiferimiento)} />}
+                            </div>
+                        </div>
+                    </Col>
+
+                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
                         <div className='ant-card gx-card-widget ant-card-bordered'>
                             <div className="ant-card-head">
                                 <div className='ant-card-head-wrapper'>
                                     <div className='ant-card-head-title'>
                                         <div className='ant-row'>
-                                            <div style={{ margin: 'auto' }} className='ant-col ant-col-md-17'>
+                                            <div style={{ margin: 'auto' }} className='ant-col ant-col-md-15'>
                                                 Programación de médicos en el día
                                             </div>
                                             <div style={{ margin: 'auto' }} className='ant-col ant-col-md-2'>
                                                 <div>Fecha</div>
                                             </div>
-                                            <div className='ant-col ant-col-md-5' >
+                                            <div className='ant-col ant-col-md-7' >
                                                 <DatePicker className=" gx-w-100" onChange={value => this.cambioFecha(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
                                             </div>
                                         </div>
@@ -195,7 +217,7 @@ class GeneralPage extends Component {
                                 </div>
                             </div>
                             <div className='ant-card-body'>
-                                {datosProgramacion.length === 1 ? <CircularProgress className='programacion' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
+                                {datosProgramacion.length === 1 ? <CircularProgress className='tamañoAuto' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
                             </div>
                         </div>
                         {/* <Widget title='Programación de médicos en el día'>
@@ -203,13 +225,8 @@ class GeneralPage extends Component {
                         </Widget> */}
                     </Col>
                     <Col xl={8} lg={24} md={24} sm={24} xs={24}>
-                        <Widget title='Atenciones en el día'>
-                            <h1>Odonnto {this.state.ronald}</h1>
-                        </Widget>
-                    </Col>
-                    <Col xl={14} lg={24} md={24} sm={24} xs={24}>
-                        <Widget title=''>
-                            {this.state.pdfDiferimiento === '' ? <CircularProgress className="heightLoader" /> : <PDFReader width='500' data={atob(this.state.pdfDiferimiento)} />}
+                        <Widget title='Datos adicionales'>
+                            <h1>Odonto {this.state.ronald}</h1>
                         </Widget>
                     </Col>
                 </Row>

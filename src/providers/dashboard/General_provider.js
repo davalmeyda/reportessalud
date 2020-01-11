@@ -25,14 +25,14 @@ class GeneralProvider {
         return await this.conexionesProvider._traerdatosSGSSExplota('a', url);
     }
 
-    pdfDiferimientoExplota = async () => {
+    pdfDiferimientoExplota = async (FECHA_INICIO_DIFERIMIENTO, fechaActual) => {
         const url = '/explotacionDatos/servlet/CtrlControl?opt=diferimiento_1';
         const parametros = {
             CAS: 822,
             ORIGEN: 2,
             actividad: '00',
-            fechaFin: '31/12/2019',
-            fechaInicio: '01/12/2019',
+            fechaFin: fechaActual,
+            fechaInicio: FECHA_INICIO_DIFERIMIENTO,
             formatoArchivo: 'pdf',
             servicio: '00',
             subactividad: '00',
