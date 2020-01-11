@@ -59,6 +59,7 @@ class GeneralPage extends Component {
         let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
+        
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
         if (dataActual[0].CENTRO === " NO HAY REGISTROS ENCONTRADOS") {
             // NOTIFICACION
@@ -130,8 +131,8 @@ class GeneralPage extends Component {
         if (!this.props.cargandoDatosProgramacion) {
             this.datosProgramacion();
         }
-
         this.odontoRonald();
+        setInterval(this.odontoRonald, 30000);
     }
 
     odontoRonald = async () => {
@@ -182,22 +183,7 @@ class GeneralPage extends Component {
                             </div>
                         </div>
                     </Col>
-                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-                        <div ref={this.refDiv} className='ant-card gx-card-widget ant-card-bordered'>
-                            <div className="ant-card-head">
-                                <div className='ant-card-head-wrapper'>
-                                    <div className='ant-card-head-title'>
-                                        {/* TITULO DIFERIMIENTO */}
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ height: this.state.pdfAlto === '0px' ? 'auto' : this.state.pdfAlto, overflow: 'hidden' }} className='ant-card-body'>
-                                {this.state.pdfDiferimiento === '' ? <CircularProgress className="tamañoAuto" /> : <PDFReader width={this.refDiv.current.clientWidth - 60} data={atob(this.state.pdfDiferimiento)} />}
-                            </div>
-                        </div>
-                    </Col>
-
-                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <div className='ant-card gx-card-widget ant-card-bordered'>
                             <div className="ant-card-head">
                                 <div className='ant-card-head-wrapper'>
@@ -219,16 +205,27 @@ class GeneralPage extends Component {
                             <div className='ant-card-body'>
                                 {datosProgramacion.length === 1 ? <CircularProgress className='tamañoAuto' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
                             </div>
-                        </div>
-                        {/* <Widget title='Programación de médicos en el día'>
-                            {datosProgramacion.length === 1 ? <CircularProgress className='programacion' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
-                        </Widget> */}
+                        </div>                        
                     </Col>
                     <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Datos adicionales'>
-                            <h1>Odonto {this.state.ronald}</h1>
+                            <p>ODONTOLOGIA - Barniz fluorado => {this.state.ronald}</p>
                         </Widget>
                     </Col>
+                    <Col xl={16} lg={24} md={24} sm={24} xs={24}>
+                        <div ref={this.refDiv} className='ant-card gx-card-widget ant-card-bordered'>
+                            <div className="ant-card-head">
+                                <div className='ant-card-head-wrapper'>
+                                    <div className='ant-card-head-title'>
+                                        {/* TITULO DIFERIMIENTO */}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ height: this.state.pdfAlto === '0px' ? 'auto' : this.state.pdfAlto, overflow: 'hidden' }} className='ant-card-body'>
+                                {this.state.pdfDiferimiento === '' ? <CircularProgress className="tamañoAuto" /> : <PDFReader width={this.refDiv.current.clientWidth - 60} data={atob(this.state.pdfDiferimiento)} />}
+                            </div>
+                        </div>
+                    </Col>                    
                 </Row>
                 {/* ESPACIO PARA MOSTRAR LAS NOTIFICACIONES */}
                 <NotificationContainer />

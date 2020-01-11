@@ -103,7 +103,6 @@ class GeneralProvider {
     gadgetProgramacionMedicos = async (fech) => {
 
         let fecha = this.herramientasProvider.formatFecha(fech);
-
         let day = fech.getDate()
         let month = fech.getMonth() + 1
         let year = fech.getFullYear()
