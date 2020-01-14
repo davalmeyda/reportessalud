@@ -92,7 +92,7 @@ class GeneralPage extends Component {
     datosProgramacion = async () => {
         this.props.cargandoDatosProgramacionF(true);
         const fecha = this.props.fechaProgramacion === '' ? FECHA_ACTUAL : this.props.fechaProgramacion;
-        const programacion = await this.generalProvider.gadgetProgramacionMedicos(fecha);
+        const programacion = await this.generalProvider.gadgetProgramacionMedicosSubActividad(fecha);
         console.log(programacion, 'Obtener Programacion');
         this.props.llenarDatosProgramacion(programacion);
     }
@@ -114,6 +114,7 @@ class GeneralPage extends Component {
     }
 
     componentDidMount = () => {
+        this.generalProvider.gadgetProgramacionMedicosSubActividad(FECHA_ACTUAL);
         this.pdfDiferimiento();
         this.setState({
             pdfAlto: (this.refDiv.current.clientWidth * 0.95) + 'px',
@@ -153,7 +154,7 @@ class GeneralPage extends Component {
     cambioFecha = async (value) => {
         this.props.llenarDatosProgramacion([{}]);
         this.props.modificarFechaProgramacion(value._d);
-        const programacion = await this.generalProvider.gadgetProgramacionMedicos(value._d);
+        const programacion = await this.generalProvider.gadgetProgramacionMedicosSubActividad(value._d);
         console.log(programacion)
         this.props.llenarDatosProgramacion(programacion);
     }
@@ -196,7 +197,9 @@ class GeneralPage extends Component {
                                                 <div>Fecha</div>
                                             </div>
                                             <div className='ant-col ant-col-md-7' >
+                                                <div>
                                                 <DatePicker className=" gx-w-100" onChange={value => this.cambioFecha(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

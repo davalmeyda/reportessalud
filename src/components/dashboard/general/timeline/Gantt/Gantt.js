@@ -76,7 +76,7 @@ export default class Gantt extends Component {
     // CONFIGURAR COLUMNAS
     gantt.config.date_scale = "%F, %Y";
     gantt.config.columns = [
-      { name: "text", label: "SERVICIOS", width: "300", tree: true },
+      { name: "text", label: "SERVICIOS", width: "350", tree: true },
     ];
     const ttt = {
       data: this.props.data,
