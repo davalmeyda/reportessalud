@@ -528,14 +528,14 @@ class GeneralProvider {
     }
 
 
-    odonto = async (fecha) => {
+    odonto = async (fecha, inicio) => {
         const url = '/explotacionDatos/servlet/CtrlControl?opt=cext13_v3';
         const parametros = {
             CAS: 822,
             ORIGEN: 2,
             actividad: 91,
             fechaFin: fecha,
-            fechaInicio: '16/10/2019',
+            fechaInicio: inicio === true ? '16/10/2019' : '16/01/2020',
             formatoArchivo: 'xls',
             numeroDocumento: '',
             servicio: 'E11',

@@ -43,7 +43,9 @@ import { PDFReader } from 'reactjs-pdf-reader';
 class GeneralPage extends Component {
     state = {
         nombre: '',
-        ronald: 0,
+        odonto1: 0,
+        odonto2: 0,
+        odonto3: 0,
         pdfDiferimiento: '',
         pdfAlto: '0px',
     }
@@ -59,7 +61,7 @@ class GeneralPage extends Component {
         let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
 
         const dataActual = await this.generalProvider.citasPorServicios(fechaActual, fechaActual);
-        
+
         // VALIDAMOS SI HAY DATOS PARA MOSTRAR
         if (dataActual[0].CENTRO === " NO HAY REGISTROS ENCONTRADOS") {
             // NOTIFICACION
@@ -139,6 +141,8 @@ class GeneralPage extends Component {
     odontoRonald = async () => {
         // RONALD
         let fechaActual = this.herramientasProviders.formatFecha(FECHA_ACTUAL);
+        let fechaTermino = this.herramientasProviders.formatFecha(new Date(2020, 1, 15));
+        const da1 = await this.generalProvider.odonto(fechaTermino, true);
         const da = await this.generalProvider.odonto(fechaActual);
         const resultado = [];
         da.forEach(d => {
@@ -147,7 +151,25 @@ class GeneralPage extends Component {
             }
         });
         this.setState({
-            ronald: resultado.length,
+            odonto1: resultado.length,
+        })
+        const resultado2 = [];
+        da.forEach(d => {
+            if (d['CODPROCED'] === 'D1206' && parseInt(d['ANNOS']) >= 5 && parseInt(d['ANNOS']) <= 11) {
+                resultado2.push(d);
+            }
+        });
+        this.setState({
+            odonto2: resultado2.length,
+        })
+        const resultado3 = [];
+        da1.forEach(d => {
+            if (d['CODPROCED'] === 'D1225' && parseInt(d['ANNOS']) >= 5 && parseInt(d['ANNOS']) <= 11) {
+                resultado3.push(d);
+            }
+        });
+        this.setState({
+            odonto3: resultado3.length,
         })
     }
 
@@ -198,7 +220,7 @@ class GeneralPage extends Component {
                                             </div>
                                             <div className='ant-col ant-col-md-7' >
                                                 <div>
-                                                <DatePicker className=" gx-w-100" onChange={value => this.cambioFecha(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
+                                                    <DatePicker className=" gx-w-100" onChange={value => this.cambioFecha(value)} defaultValue={moment(fecha, 'DD/MM/YYYY')} format={'DD/MM/YYYY'} />
                                                 </div>
                                             </div>
                                         </div>
@@ -208,11 +230,14 @@ class GeneralPage extends Component {
                             <div className='ant-card-body'>
                                 {datosProgramacion.length === 1 ? <CircularProgress className='tamañoAuto' /> : <TimelineBloque data={datosProgramacion}></TimelineBloque>}
                             </div>
-                        </div>                        
+                        </div>
                     </Col>
                     <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                         <Widget title='Datos adicionales'>
-                            <p>ODONTOLOGIA - Barniz fluorado => {this.state.ronald}</p>
+                            <p>ODONTOLOGIA - Hasta 15/01/2020 => {this.state.odonto3}</p>
+                            <p>ODONTOLOGIA - Barniz fluorado => {this.state.odonto1}</p>
+                            <p>ODONTOLOGIA - D1206 => {this.state.odonto2}</p>
+                            <p>TOTAL ODONTOLOGIA => {this.state.odonto2 + this.state.odonto3 + this.state.odonto1}</p>
                         </Widget>
                     </Col>
                     <Col xl={16} lg={24} md={24} sm={24} xs={24}>
@@ -228,7 +253,7 @@ class GeneralPage extends Component {
                                 {this.state.pdfDiferimiento === '' ? <CircularProgress className="tamañoAuto" /> : <PDFReader width={this.refDiv.current.clientWidth - 60} data={atob(this.state.pdfDiferimiento)} />}
                             </div>
                         </div>
-                    </Col>                    
+                    </Col>
                 </Row>
                 {/* ESPACIO PARA MOSTRAR LAS NOTIFICACIONES */}
                 <NotificationContainer />
